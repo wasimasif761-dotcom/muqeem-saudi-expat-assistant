@@ -1,0 +1,22 @@
+# Service Worker must never be cached long term
+/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate
+  Service-Worker-Allowed: /
+
+# Web App Manifest correct MIME type
+/manifest.webmanifest
+  Content-Type: application/manifest+json; charset=utf-8
+  Access-Control-Allow-Origin: *
+
+/manifest.json
+  Content-Type: application/manifest+json; charset=utf-8
+  Access-Control-Allow-Origin: *
+
+# Static cached assets
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Root security & mobile PWA headers
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN

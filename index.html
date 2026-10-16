@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <script>
+      (function() {
+        // Suppress unhandled rejection / error for Vite HMR WebSocket
+        window.addEventListener('unhandledrejection', function(e) {
+          if (e.reason && (
+            (e.reason.message && e.reason.message.indexOf('WebSocket closed without opened') !== -1) ||
+            (typeof e.reason === 'string' && e.reason.indexOf('WebSocket closed without opened') !== -1)
+          )) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+          }
+        });
+
+        window.addEventListener('error', function(e) {
+          if (e.message && e.message.indexOf('WebSocket closed without opened') !== -1) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+          }
+        });
+
+        var orig = console.error;
+        console.error = function() {
+          var msg = arguments[0];
+          if (typeof msg === 'string' && (msg.indexOf('WebSocket closed without opened') !== -1 || msg.indexOf('[vite] Error: WebSocket') !== -1)) {
+            return;
+          }
+          return orig.apply(console, arguments);
+        };
+
+        // Satisfy Vite HMR client in iframe preview where HMR WebSocket is disabled
+        var OrigWebSocket = window.WebSocket;
+        if (OrigWebSocket) {
+          window.WebSocket = function(url, protocols) {
+            if (protocols === 'vite-hmr' || (Array.isArray(protocols) && protocols.indexOf('vite-hmr') !== -1)) {
+              var target = new EventTarget();
+              target.readyState = 0;
+              target.url = url;
+              target.protocol = 'vite-hmr';
+              target.send = function() {};
+              target.close = function() { target.readyState = 3; };
+              setTimeout(function() {
+                target.readyState = 1;
+                target.dispatchEvent(new Event('open'));
+              }, 0);
+              return target;
+            }
+            return new OrigWebSocket(url, protocols);
+          };
+          window.WebSocket.prototype = OrigWebSocket.prototype;
+          window.WebSocket.CONNECTING = 0;
+          window.WebSocket.OPEN = 1;
+          window.WebSocket.CLOSING = 2;
+          window.WebSocket.CLOSED = 3;
+        }
+      })();
+    </script>
+    <title>Muqeem - Saudi Expat Life & Document Assistant</title>
+    <meta name="description" content="AI-powered document scanner, expiry reminder, Jeddah guide, and expense tracker for expatriates in Saudi Arabia with multilingual RTL support (Urdu, Arabic, English)." />
+    
+    <!-- Open Graph & Twitter -->
+    <meta property="og:title" content="Muqeem - Saudi Expat Life & Document Assistant" />
+    <meta property="og:description" content="AI-powered document scanner, expiry reminder, Jeddah guide, and expense tracker for expatriates in Saudi Arabia with multilingual RTL support (Urdu, Arabic, English)." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- PWA & Mobile Meta Tags -->
+    <meta name="theme-color" content="#047857" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Muqeem" />
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- Google Fonts for English, Urdu & Arabic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-slate-950 text-slate-100 antialiased selection:bg-emerald-500 selection:text-white">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "Muqeem - Saudi Expat Life & Document Assistant",
+  "description": "AI-powered document scanner, expiry reminder, Jeddah guide, and expense tracker for expatriates in Saudi Arabia with multilingual RTL support (Urdu, Arabic, English).",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
